@@ -13,7 +13,10 @@ class Post(BaseModel):
     rating: Optional[int] = None
 
 
-my_posts = []
+my_posts = [{"title": "Niniko",
+             "content": "ChemiDzma",
+             "rating": 5,
+             "id": 1}]
 
 
 def find_post(id):
@@ -65,3 +68,13 @@ def delete_post(id: int):
         return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
+@app.put("/posts/{id}")
+def update_post(id: int, post: Post):
+    index = find_index_post(id)
+    if index is None:
+        raise HTTPException(status_code=404, detail=f"Post not found: {id}")
+
+    post_dict = post.dict()
+    post_dict['id'] = id
+    my_posts[index] = post_dict
+    return {"message": post_dict}
